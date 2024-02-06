@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "itml"
+version = "0.0.1"
+description = "File format which makes internationalize texts easy"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Justus Röderer", email = "mail@dateiexplorer.de" }]
