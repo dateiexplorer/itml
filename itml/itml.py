@@ -22,6 +22,9 @@ def _tokenize_line(line: str) -> list[Token]:
     if leading_space == 0 and len(line) == 0:
         # Empty line
         return [Token(("NEWLINE",))]
+    elif line.strip().startswith("#"):
+        # Comment
+        return [Token(("COMMENT",))]
     elif leading_space == 0:
         # Identifier
         id, type = line.split(":", 2)
@@ -65,7 +68,7 @@ class Parser:
                         data[id] = self._parse_str()
                     elif type == "list":
                         data[id] = self._parse_list()
-                case "NEWLINE":
+                case "NEWLINE" | "COMMENT":
                     continue
 
         return data
@@ -97,4 +100,6 @@ class Parser:
                 string = self._parse_str()
                 paragraphs.append(string)
             elif token[0] == "NEWLINE":
+                continue
+            elif token[0] == "COMMENT":
                 continue

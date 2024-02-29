@@ -38,6 +38,12 @@ class TestITMLTokenizing(unittest.TestCase):
         self.assertEqual(actual[0], Token(("INDENT", 4)))
         self.assertEqual(actual[1], Token(("STRING", "Hello, world!")))
 
+    def test_tokenize_line_as_comments(self):
+        input = "# This is a comment"
+        actual = _tokenize_line(input)
+        self.assertEqual(len(actual), 1)
+        self.assertEqual(actual, [Token(("COMMENT",))])
+
     def test_tokenize(self):
         with open(
             Path(__file__).parent.resolve().joinpath("files", "test.itml")
@@ -45,16 +51,19 @@ class TestITMLTokenizing(unittest.TestCase):
             input = file.read()
 
         actual = tokenize(input)
-        self.assertEqual(len(actual), 9)
+        self.assertEqual(len(actual), 11)
         self.assertEqual(actual[0], Token(("NAME", "id1", "str")))
         self.assertEqual(actual[1], Token(("INDENT", 4)))
         self.assertEqual(actual[2], Token(("STRING", "Hello, world!")))
         self.assertEqual(actual[3], Token(("NEWLINE",)))
-        self.assertEqual(actual[4], Token(("NAME", "id2", "str")))
-        self.assertEqual(actual[5], Token(("INDENT", 4)))
-        self.assertEqual(actual[6], Token(("STRING", "Hello,")))
-        self.assertEqual(actual[7], Token(("INDENT", 4)))
-        self.assertEqual(actual[8], Token(("STRING", "world!")))
+        self.assertEqual(actual[4], Token(("COMMENT",)))
+        self.assertEqual(actual[5], Token(("NAME", "id2", "str")))
+        self.assertEqual(actual[6], Token(("INDENT", 4)))
+        self.assertEqual(actual[7], Token(("STRING", "Hello,")))
+        self.assertEqual(actual[8], Token(("COMMENT",)))
+        self.assertEqual(actual[9], Token(("INDENT", 4)))
+        self.assertEqual(actual[10], Token(("STRING", "world!")))
+
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
 id1: str
     Hello, world!
 
+# This is a comment
 id2: str
     Hello,
+    # This is a comment
     world!
