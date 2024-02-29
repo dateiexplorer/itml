@@ -84,6 +84,8 @@ class Parser:
                 continue
             elif token[0] == "STRING":
                 strings.append(token[1])
+            elif token[0] == "COMMENT":
+                continue
             else:
                 self._decrease_index()
                 return " ".join(strings)
