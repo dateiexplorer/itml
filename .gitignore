@@ -1,13 +1,11 @@
-.vscode/
-
 __pycache__
 *.__pycache__
-*.egg-info
 
 env/
 .env/
 venv/
 .venv/
 
+*.egg-info
 build/
 dist/

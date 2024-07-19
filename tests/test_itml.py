@@ -1,9 +1,11 @@
-from pathlib import Path
 import unittest
-from itml.itml import Parser, Token, get_leading_space, _tokenize_line, tokenize
+from pathlib import Path
+
+from itml.itml import Parser, Token, _tokenize_line, get_leading_space, tokenize
 
 
-class TestITMLTokenizing(unittest.TestCase):
+class TestTokenizer(unittest.TestCase):
+
     def test_get_leading_space(self):
         test_cases = {
             "    Hello, world!": 4,
@@ -64,6 +66,9 @@ class TestITMLTokenizing(unittest.TestCase):
         self.assertEqual(actual[9], Token(("INDENT", 4)))
         self.assertEqual(actual[10], Token(("STRING", "world!")))
 
+
+class TestParser(unittest.TestCase):
+
     def test_parse(self):
         with open(
             Path(__file__).parent.resolve().joinpath("files", "test.itml")
@@ -72,12 +77,10 @@ class TestITMLTokenizing(unittest.TestCase):
 
         parser = Parser(input)
         actual = parser.parse()
-        self.assertDictEqual(actual, {
-            "id1": "Hello, world!",
-            "id2": "Hello, world!",
-        })
-
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assertDictEqual(
+            actual,
+            {
+                "id1": "Hello, world!",
+                "id2": "Hello, world!",
+            },
+        )

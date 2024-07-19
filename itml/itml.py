@@ -1,3 +1,8 @@
+from typing import Any
+
+import jinja2
+
+
 class Token(tuple):
     pass
 
@@ -38,8 +43,9 @@ def _tokenize_line(line: str) -> list[Token]:
 
 
 class Parser:
-    def __init__(self, s: str):
+    def __init__(self, s: str, context: dict[str, Any] = dict()):
         self._index = 0
+        self._context = context
         self._tokens: list[Token] = tokenize(s)
         self._data: dict[str, str] = {}
 
@@ -73,13 +79,13 @@ class Parser:
 
         return data
 
-    def _parse_str(self):
+    def _parse_str(self) -> str:
         strings: list[str] = []
         while True:
             token = self._get_next_token()
             if token is None:  # Reached end of tokens
                 self._decrease_index()
-                return " ".join(strings)
+                return self._render_str(strings)
             elif token[0] == "INDENT":
                 continue
             elif token[0] == "STRING":
@@ -88,9 +94,9 @@ class Parser:
                 continue
             else:
                 self._decrease_index()
-                return " ".join(strings)
+                return self._render_str(strings)
 
-    def _parse_list(self):
+    def _parse_list(self) -> list[str]:
         paragraphs: list[str] = []
         while True:
             token = self._get_next_token()
@@ -105,3 +111,9 @@ class Parser:
                 continue
             elif token[0] == "COMMENT":
                 continue
+
+    def _render_str(self, strings: list[str]) -> str:
+        raw_string = " ".join(strings)
+
+        string = jinja2.Template(raw_string).render(self._context)
+        return string
