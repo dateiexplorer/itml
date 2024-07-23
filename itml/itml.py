@@ -65,7 +65,7 @@ class _Parser:
     def __init__(self, s: str | Path, **kwargs) -> None:
         self._index = 0
         if isinstance(s, Path) and s.is_file():
-            content = s.read_text()
+            content = s.read_text("utf-8")
             self._anchor: Path = s.parent
         else:
             content = s
