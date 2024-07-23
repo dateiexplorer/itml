@@ -1,54 +1,39 @@
 import unittest
 from pathlib import Path
 
-from itml.itml import Parser, Token, _tokenize_line, get_leading_space, tokenize
+from itml.itml import Token, _Parser, _Tokenizer, parse, tokenize
 
 
 class TestTokenizer(unittest.TestCase):
 
-    def test_get_leading_space(self):
-        test_cases = {
-            "    Hello, world!": 4,
-            "    Hello, world!  ": 4,
-            "\tHello, world!": 1,
-            "\t Hello, world!": 2,
-            "Hello, world!": 0,
-            "\n": 1,
-            "": 0,
-        }
-        for input, expected in test_cases.items():
-            with self.subTest():
-                actual = get_leading_space(input)
-                self.assertEqual(actual, expected)
-
     def test_tokenize_line_as_newline(self):
         input = ""
-        actual = _tokenize_line(input)
+        actual = _Tokenizer(None)._tokenize_line(input)
         self.assertEqual(len(actual), 1)
         self.assertEqual(actual, [Token(("NEWLINE",))])
 
     def test_tokenize_line_as_name(self):
         input = "identifier: type"
-        actual = _tokenize_line(input)
+        actual = _Tokenizer(None)._tokenize_line(input)
         self.assertEqual(len(actual), 1)
         self.assertEqual(actual, [Token(("NAME", "identifier", "type"))])
 
     def test_tokenize_line_as_string(self):
         input = "    Hello, world!"
-        actual = _tokenize_line(input)
+        actual = _Tokenizer(None)._tokenize_line(input)
         self.assertEqual(len(actual), 2)
         self.assertEqual(actual[0], Token(("INDENT", 4)))
         self.assertEqual(actual[1], Token(("STRING", "Hello, world!")))
 
     def test_tokenize_line_as_comments(self):
         input = "# This is a comment"
-        actual = _tokenize_line(input)
+        actual = _Tokenizer(None)._tokenize_line(input)
         self.assertEqual(len(actual), 1)
         self.assertEqual(actual, [Token(("COMMENT",))])
 
     def test_tokenize(self):
         with open(
-            Path(__file__).parent.resolve().joinpath("files", "test.itml")
+            Path(__file__).parent.resolve().joinpath("files", "sample01.itml")
         ) as file:
             input = file.read()
 
@@ -69,18 +54,38 @@ class TestTokenizer(unittest.TestCase):
 
 class TestParser(unittest.TestCase):
 
-    def test_parse(self):
-        with open(
-            Path(__file__).parent.resolve().joinpath("files", "test.itml")
-        ) as file:
-            input = file.read()
+    def test_init(self):
+        path = Path(__file__).parent.joinpath("files", "sample01.itml")
+        parser = _Parser(path)
+        self.assertEqual(parser._anchor, path.parent)
 
-        parser = Parser(input)
-        actual = parser.parse()
+    def test_parse(self):
+        path = Path(__file__).parent.joinpath("files", "sample01.itml")
+        actual = parse(path)
         self.assertDictEqual(
             actual,
             {
                 "id1": "Hello, world!",
                 "id2": "Hello, world!",
             },
+        )
+
+    def test_import(self):
+        data = parse(
+            "import sample02.itml",
+            anchor=Path(__file__).parent.joinpath("files"),
+        )
+
+        self.assertDictEqual({"id1": "Hello, world!"}, data)
+
+    def test_import_with_content(self):
+        path = Path(__file__).parent.joinpath("files", "sample03.itml")
+        data = parse(path)
+
+        self.assertDictEqual(
+            {
+                "id1": "Hello, world!",
+                "id2": "New identifier",
+            },
+            data,
         )

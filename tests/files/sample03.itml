@@ -1,0 +1,4 @@
+import sample02.itml
+
+id2: str
+    New identifier
