@@ -1,6 +1,6 @@
-# Internationalization Templating Markup Language
+# Internationalization Templating Markup Language (ITML)
 
-File format which makes internationalize texts easy.
+File format that simplifies text internationalization.
 
-This repository contains the itml parser that parses ITML files into a Python
+This library contains the ITML parser that parses `itml` files into a Python
 directory structure.

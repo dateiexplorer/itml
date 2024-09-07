@@ -1,15 +1,14 @@
-[build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "itml"
 version = "2.1.0"
-description = "File format which makes internationalize texts easy."
+description = "File format that simplifies text internationalization"
+authors = [{ name = "Justus Röderer", email = "mail@dateiexplorer.de" }]
 readme = "README.md"
 requires-python = ">=3.11"
-license = { file = "LICENSE" }
-authors = [{ name = "Justus Röderer", email = "mail@dateiexplorer.de" }]
 dependencies = [
-    "Jinja2 ~= 3.1.2",
+    "Jinja2 >= 3.1.2",
 ]
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
